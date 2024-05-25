@@ -11,6 +11,11 @@ on:
         description: 'The name of the Docker container'
         required: true
         type: string
+      docker_compose_file:
+        description: 'The name of the Docker compose file'
+        required: true
+        type: string
+      
         
 jobs:
   deploy:
@@ -33,6 +38,6 @@ jobs:
         run: |
           ssh snippet-searcher-admin@${{ inputs.server_url }} << EOF
             cd snippet-infra
-            docker-compose down ${{ inputs.container_name }}
-            docker-compose up ${{ inputs.container_name }} -d
+            docker-compose -f ${{ inputs.container_name }} down ${{ inputs.container_name }}
+            docker-compose -f ${{ inputs.container_name }} up ${{ inputs.container_name }} -d
           EOF
