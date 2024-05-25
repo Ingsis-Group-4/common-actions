@@ -3,10 +3,6 @@ name: "Deploy Workflow"
 on:
   workflow_call:
     inputs:
-      server_url:
-        description: 'The host of the virtual machine'
-        required: true
-        type: string
       container_name:
         description: 'The name of the Docker container'
         required: true
@@ -15,7 +11,10 @@ on:
         description: 'The name of the Docker compose file'
         required: true
         type: string
-      
+    secrets:
+      server_url:
+        description: 'The host of the virtual machine'
+        required: true
         
 jobs:
   deploy:
