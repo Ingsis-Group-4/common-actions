@@ -31,11 +31,11 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ inputs.server_url }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.server_url }} >> ~/.ssh/known_hosts
 
       - name: Deploy to server
         run: |
-          ssh snippet-searcher-admin@${{ inputs.server_url }} << EOF
+          ssh snippet-searcher-admin@${{ secrets.server_url }} << EOF
             cd snippet-infra
             docker-compose -f ${{ inputs.docker_compose_file }} down ${{ inputs.container_name }}
             docker-compose -f ${{ inputs.docker_compose_file }} up ${{ inputs.container_name }} -d
