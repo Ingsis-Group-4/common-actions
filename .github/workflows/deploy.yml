@@ -11,6 +11,14 @@ on:
         description: 'The name of the Docker container'
         required: true
         type: string
+      docker_compose_file:
+        description: 'The name of the Docker compose file'
+        required: true
+        type: string
+    secrets:
+      server_url:
+        description: 'The host of the virtual machine'
+        required: true
 
 jobs:
   deploy:
@@ -38,6 +46,6 @@ jobs:
         run: |
           ssh -i $SSH_KEY_PATH snippet-searcher-admin@${{ inputs.server_url }} << EOF
             cd snippet-infra
-            docker-compose stop ${{ inputs.container_name }}
-            docker-compose up ${{ inputs.container_name }} -d --build
+            docker-compose -f ${{ inputs.docker_compose_file }} down ${{ inputs.container_name }}
+            docker-compose -f ${{ inputs.docker_compose_file }} up ${{ inputs.container_name }} -d
           EOF
