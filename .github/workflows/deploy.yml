@@ -11,7 +11,7 @@ on:
         description: 'The name of the Docker container'
         required: true
         type: string
-        
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -20,19 +20,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up SSH
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Create SSH key
         run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ inputs.server_url }} >> ~/.ssh/known_hosts
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ../private.key
+          sudo chmod 600 ../private.key
+          echo "$SSH_DEV_HOSTS" > ~/.ssh/known_hosts
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+          SSH_DEV_HOSTS: ${{ inputs.server_url }}
+          SSH_KEY_PATH: ${{ github.workspace }}/../private.key
 
       - name: Deploy to server
+        env:
+          SSH_KEY_PATH: ${{ github.workspace }}/../private.key
         run: |
-          ssh snippet-searcher-admin@${{ inputs.server_url }} << EOF
+          ssh -i $SSH_KEY_PATH snippet-searcher-admin@${{ inputs.server_url }} << EOF
             cd snippet-infra
-            docker-compose down ${{ inputs.container_name }}
-            docker-compose up ${{ inputs.container_name }} -d
+            docker-compose stop ${{ inputs.container_name }}
+            docker-compose up ${{ inputs.container_name }} -d --build
           EOF
