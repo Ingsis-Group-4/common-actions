@@ -15,10 +15,10 @@ on:
         description: 'The name of the Docker compose file'
         required: true
         type: string
-    secrets:
-      server_url:
-        description: 'The host of the virtual machine'
+      shh_key:
+        description: 'SSH key to connect to the server'
         required: true
+        type: string
 
 jobs:
   deploy:
@@ -36,7 +36,7 @@ jobs:
           echo "$SSH_DEV_HOSTS" > ~/.ssh/known_hosts
         shell: bash
         env:
-          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+          SSH_PRIVATE_KEY: ${{ inputs.ssh_key }}
           SSH_DEV_HOSTS: ${{ inputs.server_url }}
           SSH_KEY_PATH: ${{ github.workspace }}/../private.key
 
