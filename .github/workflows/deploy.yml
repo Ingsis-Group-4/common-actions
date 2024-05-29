@@ -46,6 +46,6 @@ jobs:
         run: |
           ssh -i $SSH_KEY_PATH snippet-searcher-admin@${{ inputs.server_url }} << EOF
             cd snippet-infra
-            docker-compose -f ${{ inputs.docker_compose_file }} down ${{ inputs.container_name }}
-            docker-compose -f ${{ inputs.docker_compose_file }} up ${{ inputs.container_name }} -d
+            docker-compose -f ${{ inputs.docker_compose_file }} stop ${{ inputs.container_name }}
+            docker-compose -f ${{ inputs.docker_compose_file }} up ${{ inputs.container_name }} -d --build
           EOF
