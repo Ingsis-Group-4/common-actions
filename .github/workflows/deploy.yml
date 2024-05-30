@@ -27,22 +27,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Create SSH key
-        run: |
-          mkdir -p ~/.ssh/
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/private.key
-          sudo chmod 600 ~/.ssh/private.key
-          echo "$SSH_DEV_HOSTS" > ~/.ssh/known_hosts
-        shell: bash
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.ssh_key }}
-          SSH_DEV_HOSTS: ${{ secrets.server_url }}
+#      - name: Create SSH key
+#        run: |
+#          mkdir -p ~/.ssh/
+#          echo "$SSH_PRIVATE_KEY" > ~/.ssh/private.key
+#          sudo chmod 600 ~/.ssh/private.key
+#          echo "$SSH_DEV_HOSTS" > ~/.ssh/known_hosts
+#        shell: bash
+#        env:
+#          SSH_PRIVATE_KEY: ${{ secrets.ssh_key }}
+#          SSH_DEV_HOSTS: ${{ secrets.server_url }}
 
       - name: Deploy to server
         env:
-          SSH_KEY_PATH: ~/.ssh/private.key
+#          SSH_KEY_PATH: ~/.ssh/private.key
+          SSH_PRIVATE_KEY: ${{ secrets.ssh_key }}
+
         run: |
-          ssh -tt -i $SSH_KEY_PATH snippet-searcher-admin@${{ secrets.server_url }} << EOF
+          echo $SSH_PRIVATE_KEY | ssh -tt -i /dev/stdin snippet-searcher-admin@${{ secrets.server_url }} << EOF
             cd snippet-infra
             docker-compose -f ${{ inputs.docker_compose_file }} stop ${{ inputs.container_name }}
             docker-compose -f ${{ inputs.docker_compose_file }} up ${{ inputs.container_name }} -d --build
