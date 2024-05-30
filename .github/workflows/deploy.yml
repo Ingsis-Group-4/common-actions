@@ -35,15 +35,15 @@ jobs:
           echo "$SSH_DEV_HOSTS" > ~/.ssh/known_hosts
         shell: bash
         env:
-          SSH_PRIVATE_KEY: ${{ inputs.ssh_key }}
-          SSH_DEV_HOSTS: ${{ inputs.server_url }}
+          SSH_PRIVATE_KEY: ${{ secrets.ssh_key }}
+          SSH_DEV_HOSTS: ${{ secrets.server_url }}
           SSH_KEY_PATH: ${{ github.workspace }}/../private.key
 
       - name: Deploy to server
         env:
           SSH_KEY_PATH: ${{ github.workspace }}/../private.key
         run: |
-          ssh -tt -i $SSH_KEY_PATH snippet-searcher-admin@${{ inputs.server_url }} << EOF
+          ssh -tt -i $SSH_KEY_PATH snippet-searcher-admin@${{ secrets.server_url }} << EOF
             cd snippet-infra
             docker-compose -f ${{ inputs.docker_compose_file }} stop ${{ inputs.container_name }}
             docker-compose -f ${{ inputs.docker_compose_file }} up ${{ inputs.container_name }} -d --build
