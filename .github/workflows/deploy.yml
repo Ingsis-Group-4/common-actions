@@ -46,9 +46,10 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.ssh_key }}
 
         run: |
-          echo $SSH_PRIVATE_KEY
-          echo $SSH_PRIVATE_KEY | ssh -tt -i /dev/stdin snippet-searcher-admin@${{ secrets.server_url }} << EOF
+          echo "$SSH_PRIVATE_KEY"
+          echo "$SSH_PRIVATE_KEY" | ssh -tt -i /dev/stdin snippet-searcher-admin@${{ secrets.server_url }} << EOF
             cd snippet-infra
             docker-compose -f ${{ inputs.docker_compose_file }} stop ${{ inputs.container_name }}
             docker-compose -f ${{ inputs.docker_compose_file }} up ${{ inputs.container_name }} -d --build
           EOF
+          
