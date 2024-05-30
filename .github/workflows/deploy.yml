@@ -27,16 +27,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-#      - name: Create SSH key
-#        run: |
-#          mkdir -p ~/.ssh/
-#          echo "$SSH_PRIVATE_KEY" > ~/.ssh/private.key
-#          sudo chmod 600 ~/.ssh/private.key
-#          echo "$SSH_DEV_HOSTS" > ~/.ssh/known_hosts
-#        shell: bash
-#        env:
-#          SSH_PRIVATE_KEY: ${{ secrets.ssh_key }}
-#          SSH_DEV_HOSTS: ${{ secrets.server_url }}
+      - name: Create SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/private.key
+          sudo chmod 600 ~/.ssh/private.key
+          echo "$SSH_DEV_HOSTS" > ~/.ssh/known_hosts
+          cat ~/.ssh/private.key
+          cat ~/.ssh/known_hosts
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.ssh_key }}
+          SSH_DEV_HOSTS: ${{ secrets.server_url }}
 
       - name: Deploy to server
         env:
@@ -44,6 +46,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.ssh_key }}
 
         run: |
+          echo $SSH_PRIVATE_KEY
           echo $SSH_PRIVATE_KEY | ssh -tt -i /dev/stdin snippet-searcher-admin@${{ secrets.server_url }} << EOF
             cd snippet-infra
             docker-compose -f ${{ inputs.docker_compose_file }} stop ${{ inputs.container_name }}
