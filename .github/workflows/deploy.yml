@@ -30,18 +30,17 @@ jobs:
       - name: Create SSH key
         run: |
           mkdir -p ~/.ssh/
-          echo "$SSH_PRIVATE_KEY" > ../private.key
-          sudo chmod 600 ../private.key
+          echo "$SSH_PRIVATE_KEY" > .ssh/private.key
+          sudo chmod 600 .ssh/private.key
           echo "$SSH_DEV_HOSTS" > ~/.ssh/known_hosts
         shell: bash
         env:
           SSH_PRIVATE_KEY: ${{ secrets.ssh_key }}
           SSH_DEV_HOSTS: ${{ secrets.server_url }}
-          SSH_KEY_PATH: ${{ github.workspace }}/../private.key
 
       - name: Deploy to server
         env:
-          SSH_KEY_PATH: ${{ github.workspace }}/../private.key
+          SSH_KEY_PATH: ${{ github.workspace }}/.ssh/private.key
         run: |
           ssh -tt -i $SSH_KEY_PATH snippet-searcher-admin@${{ secrets.server_url }} << EOF
             cd snippet-infra
