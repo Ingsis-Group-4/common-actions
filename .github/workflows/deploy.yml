@@ -43,7 +43,7 @@ jobs:
         env:
           SSH_KEY_PATH: ${{ github.workspace }}/../private.key
         run: |
-          ssh -i $SSH_KEY_PATH snippet-searcher-admin@${{ inputs.server_url }} << EOF
+          ssh -tt -i $SSH_KEY_PATH snippet-searcher-admin@${{ inputs.server_url }} << EOF
             cd snippet-infra
             docker-compose -f ${{ inputs.docker_compose_file }} stop ${{ inputs.container_name }}
             docker-compose -f ${{ inputs.docker_compose_file }} up ${{ inputs.container_name }} -d --build
