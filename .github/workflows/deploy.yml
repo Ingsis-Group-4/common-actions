@@ -30,7 +30,7 @@ jobs:
       - name: Create SSH key
         run: |
           mkdir -p ~/.ssh/
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/private.key
+          echo ${{ secrets.ssh_key }} > ~/.ssh/private.key
           sudo chmod 600 ~/.ssh/private.key
           echo "$SSH_DEV_HOSTS" > ~/.ssh/known_hosts
           cat ~/.ssh/private.key
@@ -47,7 +47,7 @@ jobs:
 
         run: |
           echo "$SSH_PRIVATE_KEY"
-          echo "$SSH_PRIVATE_KEY" | ssh -tt -i /dev/stdin snippet-searcher-admin@${{ secrets.server_url }} << EOF
+          echo ${{ secrets.ssh_key }} | ssh -tt -i /dev/stdin snippet-searcher-admin@${{ secrets.server_url }} << EOF
             cd snippet-infra
             docker-compose -f ${{ inputs.docker_compose_file }} stop ${{ inputs.container_name }}
             docker-compose -f ${{ inputs.docker_compose_file }} up ${{ inputs.container_name }} -d --build
