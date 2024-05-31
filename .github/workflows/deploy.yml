@@ -29,6 +29,7 @@ jobs:
 
       - name: Create SSH key
         run: |
+          
           mkdir -p ~/.ssh/
           echo ${{ secrets.ssh_key }} > ~/.ssh/private.key
           sudo chmod 600 ~/.ssh/private.key
@@ -42,12 +43,12 @@ jobs:
         env:
           SSH_KEY_PATH: ~/.ssh/private.key
           SSH_PRIVATE_KEY: ${{ secrets.ssh_key }}
-
+          REMOTE_HOST: snippet-searcher-admin@${{ secrets.server_url }}
         run: |
-        
-          ssh -tt -i "$SSH_KEY_PATH" snippet-searcher-admin@${{ secrets.server_url }} << EOF
+          echo "Connecting to $REMOTE_HOST"
+          ssh -T -i "$SSH_KEY_PATH" $REMOTE_HOST << 'EOL'
             cd snippet-infra
             docker-compose -f ${{ inputs.docker_compose_file }} stop ${{ inputs.container_name }}
             docker-compose -f ${{ inputs.docker_compose_file }} up ${{ inputs.container_name }} -d --build
-          EOF
+          EOL
           
