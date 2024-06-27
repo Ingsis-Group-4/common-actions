@@ -14,8 +14,7 @@ on:
         description: 'GitHub Token'
         type: string
         required: true
-    outputs:
-      build_status: ${{ steps.build.outputs.build_status }}
+
 
 jobs:
   build:
