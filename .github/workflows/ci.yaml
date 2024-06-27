@@ -13,7 +13,6 @@ on:
       github_token:
         required: true
 
-
 jobs:
   build:
 
