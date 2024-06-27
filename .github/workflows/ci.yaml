@@ -9,12 +9,11 @@ name: Java CI with Gradle
 
 on:
   workflow_call:
-    inputs:
-      secrets:
-        description: 'GitHub Token'
-        required: true
-        default: ${{ secrets.GITHUB_TOKEN }}
-        type: string
+    secrets:
+      description: 'GitHub Token'
+      required: true
+      default: ${{ secrets.GITHUB_TOKEN }}
+      type: string
 
 
 jobs:
